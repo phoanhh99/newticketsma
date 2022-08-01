@@ -19,10 +19,13 @@ router.get('/login', (req, res, next) => {
   const authHeader = req.headers['authorization']
   const reqtoken = authHeader && authHeader.split(' ')[1]
   if (reqtoken) {
-    const decoded = jwt.verify(reqtoken, token)
-    res.json({hasToken: decoded})
+    jwt.verify(reqtoken, token, (err, decoded) => {
+      if (err) {
+        res.json({fail: 'Hết phiên đăng nhập, vui lòng đăng nhập lại'})
+      } else res.json({hasToken: decoded})
+    })
   } else {
-    res.json({hasToken: ''})
+    res.json({})
   }
   next()
 })

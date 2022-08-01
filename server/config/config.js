@@ -13,5 +13,5 @@ module.exports = {
     password: process.env.DB_PWD,
     connectionString: process.env.DB_CONN,
   },
-  token: 'dragondeeznutheheh',
+  token: process.env.JWT_AUTH_TOKEN,
 }

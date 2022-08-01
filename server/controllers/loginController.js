@@ -19,13 +19,13 @@ module.exports.LOGIN = async (req, res, next) => {
     })
   } else {
     const jwttoken = jwt.sign({username: req.body.username}, token, {
-      expiresIn: 60,
+      expiresIn: '3h',
     })
     res.json({
       type: 'success',
       message: 'Success, please wait for a sec',
       result: rows,
-      jwttoken: jwttoken,
+      jwttoken,
     })
   }
   next()
