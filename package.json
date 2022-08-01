@@ -1,0 +1,19 @@
+{
+  "name": "ticketsma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server-start": "cd server && npm run start",
+    "client-start": "cd client && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eslint": "^8.11.0",
+    "http-status": "^1.5.0",
+    "prettier": "^2.6.1",
+    "sweetalert2": "^11.4.24"
+  }
+}
