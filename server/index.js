@@ -29,6 +29,7 @@ function initDB() {
     // if not set, node-oracledb will try to find path inside ~/node_modules/oracledb/build/release/*
     try {
       oracledb.initOracleClient()
+      console.log('OracleDB loaded !')
     } catch (error) {
       console.log(error)
       process.exitCode(1)

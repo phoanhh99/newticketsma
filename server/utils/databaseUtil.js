@@ -1,5 +1,5 @@
 const oracledb = require('oracledb')
-const dbConfig = require('../config/config')
+const {connectionPool} = require('../config/config')
 /**
   DBType can be store, stored or s
 **/
@@ -15,10 +15,9 @@ module.exports.ExecuteProcedure = async (
 
   try {
     conn = await oracledb.getConnection({
-      user: dbConfig.connectionPool.user,
-      password: dbConfig.connectionPool.password,
-      connectString: dbConfig.connectionPool.connectionString,
-      externalAuth: false,
+      user: connectionPool.user,
+      password: connectionPool.password,
+      connectString: connectionPool.connectionString,
     })
     paraInsert = convertToQueryFormatStr(DBParameters)
     switch (DBType.toUpperCase()) {

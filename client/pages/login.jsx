@@ -1,10 +1,10 @@
+import axios from 'axios'
+import Cookies from 'js-cookie'
 import Head from 'next/head'
+import Router from 'next/router'
 import {useEffect, useState} from 'react'
 import {Button, Card, Col, Form, InputGroup, Row} from 'react-bootstrap'
 import Swal from 'sweetalert2'
-import axios from 'axios'
-import Router from 'next/router'
-
 const SWAL_FAIL_OPTION = {
     position: 'center',
     icon: 'error',
@@ -24,19 +24,31 @@ const SWAL_FAIL_OPTION = {
   }
 
 export async function getServerSideProps({req, res}) {
-  const cookie = req.header?.cookie
+  let cookies = {}
+  const cookiesArray = req.headers?.cookie?.split(';')
+  cookiesArray.forEach(cookie => {
+    const [key, value] = cookie.trim().split('=')
+    cookies[key] = value
+  })
+  const jwtCookie = cookies['JwtToken']
   const result = await axios.get('/login', {
     baseURL: 'http://localhost:5000/api',
-    headers: cookie && {
-      cookie,
+    headers: jwtCookie && {
+      authorization: `Bearer ${jwtCookie}`,
     },
     withCredentials: true,
   })
-  if (result.data.hasToken !== '') {
+  if (result.data.hasToken) {
     return {
       redirect: {
         destination: '/cases',
         permanent: true,
+      },
+    }
+  } else if (result.data.fail) {
+    return {
+      props: {
+        Errormessage: result.data.fail,
       },
     }
   }
@@ -45,7 +57,7 @@ export async function getServerSideProps({req, res}) {
   }
 }
 
-const LoginPage = props => {
+const LoginPage = ({Errormessage}) => {
   const [isLoading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     username: '',
@@ -73,9 +85,10 @@ const LoginPage = props => {
           text: result.data.message,
         })
       } else {
-        document.cookie = `token=${result.data.jwttoken}`
+        Cookies.set('JwtToken', result.data.jwttoken)
         Swal.fire({
           ...SWAL_SUCCESS_OPTION,
+          showConfirmButton: false,
           text: result.data.message,
         }).then(rs => {
           if (rs.isConfirmed || rs.isDismissed) {
@@ -85,6 +98,21 @@ const LoginPage = props => {
       }
     }
   }, [isLoading])
+
+  useEffect(() => {
+    if (Errormessage) {
+      Cookies.remove('JwtToken')
+      Swal.fire({
+        position: 'bottom-end',
+        toast: true,
+        icon: 'error',
+        titleText: Errormessage,
+        showConfirmButton: false,
+        showCloseButton: true,
+        color: 'crimson',
+      })
+    }
+  }, [])
 
   return (
     <div className='customLoginPage'>
