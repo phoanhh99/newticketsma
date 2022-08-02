@@ -18,14 +18,13 @@ module.exports.LOGIN = async (req, res, next) => {
       message: rows['FAIL'],
     })
   } else {
-    const jwttoken = jwt.sign({username: req.body.username}, token, {
-      expiresIn: '3h',
-    })
     res.json({
       type: 'success',
       message: 'Success, please wait for a sec',
       result: rows,
-      jwttoken,
+      jwttoken: jwt.sign({username: req.body.username}, token, {
+        expiresIn: req.body.isRemember ? '1d' : '2h',
+      }),
     })
   }
   next()

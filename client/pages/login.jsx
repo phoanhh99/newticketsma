@@ -76,6 +76,7 @@ const LoginPage = ({Errormessage}) => {
       const data = {
         username: formData.username,
         password: formData.password,
+        isRemember: formData.isRemember,
       }
       const result = await axios.post('/login', data)
       setLoading(false)
